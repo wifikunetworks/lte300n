@@ -18,3 +18,8 @@ sshpass -p admin ssh -o HostKeyAlgorithms=+ssh-rsa root@192.168.8.1 "echo -e 'AT
 
 sshpass -p admin ssh -o HostKeyAlgorithms=+ssh-rsa root@192.168.8.1 "reboot"
 ~~~
+
+INSTALL PING MONITOR
+~~~
+wget --no-check-certificate -N -P /www/ping-monitor/ https://raw.githubusercontent.com/wifikunetworks/lte300n/main/ping.sh && chmod +x /www/ping-monitor/ping.sh 
+~~~

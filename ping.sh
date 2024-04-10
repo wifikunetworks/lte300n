@@ -55,12 +55,12 @@ while true; do
     start_time=$(date +%s)
     
     # Cek koneksi internet dengan ping ke alamat IP atau domain yang ditentukan
-    if $ping_command &> /dev/null; then
+    if eval $ping_command &> /dev/null; then
         # Jika ping berhasil (berarti koneksi online)
         offline_count=0
         if [ $(date +%s) -ge $next_online_log_time ]; then
             write_online_log
-            next_online_log_time=$((next_online_log_time + online_log_interval))
+            next_online_log_time=$(( $(date +%s) + online_log_interval))
         fi
     else
         # Jika ping gagal (berarti koneksi offline)

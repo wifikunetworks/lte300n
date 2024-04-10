@@ -37,7 +37,7 @@ max_retry=5
 next_online_log_time=$(date +%s)
 
 # Alamat IP yang akan di-ping untuk memeriksa koneksi
-ping_target="8.8.8.8"
+ping_target="google.com"
 
 # Loop utama
 while true; do

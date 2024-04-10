@@ -1,6 +1,4 @@
-# Script By: Keripik Kinta
-# TAMBAHKAN DI STARTUP RC.LOCAL
-# (sleep 60 && /www/ping-monitor/ping.sh) &
+#!/bin/bash
 
 # Fungsi untuk menulis log saat status koneksi OFFLINE
 write_offline_log() {
@@ -9,8 +7,7 @@ write_offline_log() {
 
 # Fungsi untuk menulis log saat status koneksi ONLINE
 write_online_log() {
-    local ping_result=$(ping -c 1 $ping_target | grep "time=" | cut -d "=" -f 4 | cut -d " " -f 1)
-    echo "$(date +"%A %d %B %Y Pukul: %T") Status: ONLINE response time=${ping_result} ms" >> /etc/modem/log.txt
+    echo "$(date +"%A %d %B %Y Pukul: %T") Status: ONLINE response time=$1 ms" >> /etc/modem/log.txt
 }
 
 # Fungsi untuk menunggu selama waktu yang ditentukan
@@ -39,28 +36,22 @@ max_retry=5
 # Waktu awal untuk penulisan log saat status koneksi ONLINE
 next_online_log_time=$(date +%s)
 
-# Alamat IP atau domain yang akan di-ping untuk memeriksa koneksi
-ping_target="google.com" # Default ping target adalah alamat IP Google DNS
-
-# Cek apakah ping_target adalah alamat IP atau domain
-if [[ $ping_target =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    ping_command="ping -c 1 $ping_target"
-else
-    ping_command="ping -c 1 -W 1 $ping_target"
-fi
+# Alamat IP yang akan di-ping untuk memeriksa koneksi
+ping_target="8.8.8.8"
 
 # Loop utama
 while true; do
     # Waktu awal untuk pengecekan
     start_time=$(date +%s)
     
-    # Cek koneksi internet dengan ping ke alamat IP atau domain yang ditentukan
-    if eval $ping_command &> /dev/null; then
+    # Cek koneksi internet dengan ping ke alamat IP yang ditentukan
+    if ping -c 1 -W 1 $ping_target &> /dev/null; then
         # Jika ping berhasil (berarti koneksi online)
         offline_count=0
         if [ $(date +%s) -ge $next_online_log_time ]; then
-            write_online_log
-            next_online_log_time=$(( $(date +%s) + online_log_interval))
+            ping_result=$(ping -c 1 -W 1 $ping_target | awk -F'/' 'END { print $5 }')
+            write_online_log $ping_result
+            next_online_log_time=$((next_online_log_time + online_log_interval))
         fi
     else
         # Jika ping gagal (berarti koneksi offline)

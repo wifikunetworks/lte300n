@@ -3,7 +3,7 @@ ONE CLICK INSTALLER
 ~~~
 opkg update && opkg install sshpass
 
-sshpass -p admin ssh -o StrictHostKeyChecking=no -o HostKeyAlgorithms=ssh-rsa root@192.168.8.1
+sshpass -p admin ssh -o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa root@192.168.8.1 "echo -e 'AT+CFUN=0\r\n' > /dev/ttyUSB2"
 
 # INSTALL CONNECTION MONITOR
 opkg remove --force-remove luci-app-lite-watchdog && rm /etc/modem/log.txt ; wget --no-check-certificate -P /root https://raw.githubusercontent.com/wifikunetworks/hgp/main/luci-app-lite-watchdog_1.0.13-20231207_all.ipk && opkg install --force-reinstall /root/luci-*-watchdog*.ipk && rm /root/*.ipk
